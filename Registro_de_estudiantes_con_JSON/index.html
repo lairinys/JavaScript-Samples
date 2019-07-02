@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset=UTF-8>
+		<title>Evaluación Final - Salón de Clases</title>
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
+		<script type="text/javascript" src="js/jquery-3.4.1.js"></script>
+		<script type="text/javascript" src="js/jquery.validate.js"></script>
+		<script type="text/javascript" src="js/script.js"></script>
+
+	</head>
+	<body>
+		<div id="contenedor">
+			<div id="menu">
+				<div id="opciones">
+					<div id="mostrar_formulario" class="opcion_menu">
+						<img class="imagen_menu" src="img/estudiante.png" >
+						<p>Agregar Estudiante</p>
+					</div>
+					<div id="mostrar_promedio" class="opcion_menu">
+						<img class="imagen_menu" src="img/promedio.png" >
+						<p>Promedio</p>
+					</div>
+					<div id="mostrar_mayor" class="opcion_menu">
+						<img class="imagen_menu" src="img/cara_feliz.png" >
+						<p>Mayor Nota</p>
+					</div>
+					<div id="mostrar_menor" class="opcion_menu">
+						<img class="imagen_menu" src="img/cara_triste.png" >
+						<p>Menor Nota</p>
+					</div>
+				</div>
+			</div>
+			<div id="listado">
+				
+			</div>
+			
+		</div>
+		<div class="bg_modal" id="modal">
+				<div class="modal_content">
+					<form id="addEstudiante">
+						
+						<img class="imagen_menu" src="img/estudiante.png">
+						<h2 id="tituloModal"></h2>
+						<div class="fila">
+							<input type="text" id="codigo" name="codigo" minlength="5" maxlength="5" required placeholder="Código">
+							<label for="codigo" class="alerta">* Requerido</label>
+						</div>
+						<div class="fila">
+							<input type="text" id="nombre" name="nombre" minlength="3" maxlength="35"  required placeholder="Nombre">
+							<label for="nombre" class="alerta">* Requerido</label>
+						</div>
+						<div class="fila">
+							<input type="number" id="nota" name="nota" min="0" max="10"  required placeholder="Nota">
+							<label for="nota" class="alerta">* Requerido</label>
+						</div>
+
+						<div class="fila">
+							<a id="cancelar" class="boton btnCancelar">Cancelar</a>
+							<button id="aceptar" class="boton btnAceptar">Aceptar</button> 
+						</div>
+
+
+					</form>
+					
+				</div>
+
+			</div>
+	</body>
+	
+</html>
