@@ -1,0 +1,43 @@
+#tablero{
+	display: table;
+}
+.ancho{
+	width: 4rem;
+}
+
+.numero{
+	width: 2rem;
+	display: table-cell;
+	padding-top: 1.5rem;
+	text-align: center;
+}
+.altocelda{
+	height: 4rem;
+}
+.letra{
+	height: 1rem;
+	text-align: center;
+	display: table-cell;
+}
+.fila{
+	display: table-row;
+}
+.celda{
+	display: table-cell;
+	vertical-align:middle;
+	align-content: center;
+
+}
+.celdaover{
+	border: 5px solid red;
+}
+.ficha{
+	width: 2rem;
+    height: 2rem;
+    border-radius: 1rem;
+    position: absolute;
+
+}
+.celdaclara{
+	background-color: 
+}
