@@ -241,33 +241,17 @@ function cumplirReglas(){
 			let baseCeldaFinal=xCeldaFinal.top+$(identificador).height();
 			let baseCeldaInicial=xCeldaInicial.top+$(identificador).height();
 
-			/* let aComer=estaComiendo(ui.draggable.attr("id"),$(idFicha).parent().attr("id"),$(this).attr("id"));
 
-			if(aComer==null)
-			{
-				minLeft=xCeldaInicial.left-$(identificador).width();
-				maxLeft=xCeldaInicial.left+$(identificador).width()*2;
-			}else{
-				minLeft=xCeldaInicial.left-$(identificador).width()*2;
-				maxLeft=xCeldaInicial.left+$(identificador).width()*3;
-			} */
 			let adjac=celdasSiguientes($(idFicha).parent().attr("id"));
+			console.log(adjac);
 			console.log("identificador"+identificador);
 			console.log("adjacentes: "+adjac);
-			let enadjac=false;
+
 			if(puedeComer(idFicha)){
 
 			}else{
 				if(adjac.length>0){
-
-					for(let i=0;i<adjac.length;i++){
-						
-						if(identificador==adjac[0]){
-								alert("estoy aqui");
-							enadjac=true;
-						}
-					}
-					if(!enadjac){
+					if($.inArray(identificador, adjac)<0){
 						movInvalido(idFicha,mensMovInv,"Solo se puede avanzar a las celdas diagonales inmediatas");
 						return(false);
 					}
@@ -485,33 +469,29 @@ function celdasSiguientes(idCelda){
 
 	let resultado=[];
 	let i=0;
+	let posIzq,posDer;
 
 	let datosPadre=idCelda.split("_");
 
-	let posIzq=$.inArray(datosPadre[1], letrasArray)-1;
-
-	let posDer=$.inArray(datosPadre[1], letrasArray)+1;
-
 	if(alTurno=='fichaclara'){
 		fila=parseInt(datosPadre[2])+1;
+		posIzq=$.inArray(datosPadre[1], letrasArray)-1;
+		posDer=$.inArray(datosPadre[1], letrasArray)+1;
 	}else{
+
 		fila=parseInt(datosPadre[2])-1;
+		posIzq=$.inArray(datosPadre[1], letrasArray)+1;
+		posDer=$.inArray(datosPadre[1], letrasArray)-1;
 	}
-	console.log("posIzq: "+posIzq);
-	console.log("posIzq: "+posDer);
-	if(posIzq>0){
+
+	if(posIzq>=0){
 		resultado[i]='#celda_'+letrasArray[posIzq]+'_'+fila;
 		i++;
 	}
-	if(posDer>0){
+	if(posDer>=0){
 		resultado[i]='#celda_'+letrasArray[posDer]+'_'+fila;
 	}	
-	//celdaIzq='#celda_'+letrasArray[posIzq]+'_'+fila;
-	//celdaDer='#celda_'+letrasArray[posDer]+'_'+fila;
 
-	
-	console.log("idCelda: "+idCelda);
-	console.log("resultado: "+resultado);
 	return resultado;
 }
 
