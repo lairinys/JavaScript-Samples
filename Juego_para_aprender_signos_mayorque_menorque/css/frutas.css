@@ -1,0 +1,410 @@
+/*************** Configuraciones Generales ************/
+body{
+	min-width: 	500px;
+}
+#contenedor{
+	width:75%;
+	margin: auto;
+}
+
+@media (max-width: 1023px) {
+	#contenedor{
+		width:90%;
+		height: auto;
+	}
+}
+
+@media (min-width: 1024px) {
+	#contenedor{	
+		height: 600px;
+	}
+}
+
+/************** Seccion de seleccion ****************/
+#seleccion{
+	
+	padding-top: 2%;
+	padding-bottom: 8%;
+	margin: auto;
+	justify-content: center;
+   	align-items: center;
+}
+
+@media (max-width: 1023px) {
+	#seleccion{
+		display:inline-flex;
+	}
+}
+
+@media (min-width: 1024px) {
+	#seleccion{
+		display:inline-flex;
+	}
+}
+
+/******************** Frutas ***********************/
+
+#frutas{
+	margin: auto;
+	width: 60%;
+	text-align: center;
+}
+
+.fruta{
+	margin: auto;
+	display: inline-block;	
+	cursor: pointer;
+}
+
+
+
+.imgFruta{	
+	margin: auto;
+
+}
+
+@media (max-width: 620px) {
+	
+	#frutas{
+		min-height: 180px;
+	}	
+	.fruta{
+		width: 90px;
+	}
+
+}
+@media (min-width: 621px) and (max-width: 915px) {
+	
+	#frutas{
+		min-height: 180px;
+	}	
+	.fruta{
+		width: 135px;
+	}
+
+}
+
+@media (min-width: 916px) and (max-width: 1023px) {
+	
+	#frutas{
+		min-height: 180px;
+	}	
+	.fruta{
+		width: 160px;
+	}
+
+}
+
+@media (min-width: 1024px) {
+	#frutas{
+		min-height: 370px;
+		
+		display: inline-block;
+	}
+
+	.fruta{
+		width: 180px;
+	}
+	.imgFruta{	
+		
+	}
+
+}
+
+/************************** Informacion ******************************/
+
+#informacion{
+    min-width: 35%;
+    float: right;  
+	display: inline-block;
+	background: url("../img/cuadro_info.png") no-repeat center;
+	background-image: url("../img/cuadro_info.svg");
+	font-family: 'Open Sans', sans-serif;
+	color:#333333;
+	text-align: center;
+}
+#seleccionada{
+	height: auto;
+}
+
+
+
+@media (max-width: 1023px) {
+	#informacion{
+	    margin-right: 10px;
+		font-size: 12pt;
+	}
+
+	#nombre{
+		margin-top: 15px;
+		height:20pt;
+	}
+
+	#precio{
+		height:15pt;
+	}
+
+	#imgFrutaSel{
+		width: 50%;
+		margin: auto 0 15px auto;
+	}
+
+}
+
+@media (min-width: 1024px) {
+	#informacion{
+	    margin-right: 20px;
+		font-size: 24pt;
+		width: 285px;
+	}
+	
+	#nombre{
+		margin-top: 30px;
+		height:40pt;
+	}
+
+	#precio{
+		height:30pt;
+	}
+
+	#imgFrutaSel{
+		margin: auto 0 30px auto;
+		height: 100pt;
+	}
+}
+
+/***************** Seccion de Cajones **************/
+
+#cajones{
+	width: 100%;
+	position: relative;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#presentacion, #contenedores{
+	display: inline-flex;
+	position: absolute;
+
+}
+
+#contenedores{
+	width: 100%;
+}
+
+#contenedor_1{
+	margin-right: 3%;
+	margin-left: 3%;
+}
+
+.cajon,.cont{
+	width: 30%;
+	height: 100px;
+	margin: auto;
+	display: inline-block;
+	z-index:1;	
+}
+
+.imagen_cajon{
+	width: 100%;
+}
+
+.objeto_cajon{
+	position: absolute;
+
+}
+
+.mayorQue{
+	 transform: rotate(180deg);
+}
+.signo{
+	width: 3.33%;
+	margin: auto;
+}
+
+@media (max-width: 620px) {
+	#cajones{
+		height: 60px;
+		padding-bottom: 10px;
+	}
+
+	#contenedores{
+		height:60px;
+	}
+
+
+	.cajon,.cont{
+		height: 60px;
+	}
+
+}
+@media (min-width: 621px) and (max-width: 915px) {
+	#cajones{
+		height: 80px;
+		padding-bottom: 10px;
+	}
+
+	#contenedores{
+		height:80px;
+	}
+
+	.cajon,.cont{
+		height: 80px;
+	}
+}
+@media (min-width: 916px)  and (max-width: 1023px) {
+	#cajones{
+		height: 100px;
+		padding-bottom: 10px;
+	}
+
+	#contenedores{
+		height:100px;
+	}
+
+	.cajon,.cont{
+		height: 100px;
+	}
+}
+
+@media (min-width: 1024px) {
+	#cajones{
+		height: 110px;
+		padding-bottom: 20px;
+	}
+	
+	#contenedores{
+		height:110px;
+	}
+
+	.cajon,.cont{
+		height: 110px;
+	}
+}
+
+/************* Seccion de feedback *****************/
+
+#feedback{
+	display: flex;
+   	justify-content: center;
+   	align-items: center;
+}
+
+#boton{
+	display: inline-block;
+	width: 30%;
+	float: right;
+}
+
+#mensaje{
+	display: inline-block;
+	width: 60%;
+}
+#titulo{
+	display: block;
+	font-weight: bold;
+}
+.boton{
+	margin: auto;
+	float: right;
+	font-family: 'Varela Round', sans-serif;
+}
+
+.boton:focus{
+	outline:0px;
+}
+
+/* Cuando el boton esta inactivo */
+.revInac,.revAct{
+	background-color: transparent;
+}
+
+.revInac button{
+	background-color: #E6E6E6;
+	color:#999999;
+	cursor: default;
+}
+
+
+/* listo para revisar */
+.revAct button{
+	background-color: #1A8DC6;
+	color:#FFFFFF;
+	cursor: pointer;
+}
+
+.revAct button:hover{
+	opacity:0.9;
+}
+
+
+/* feedback positivo */
+.positivo{
+	background-color: #bff199;
+	color:#4d8b4b;
+	cursor: pointer;
+}
+
+.positivo button{
+	background-color: #4d8b4b;
+	color:#FFFFFF;
+	cursor: pointer;
+}
+
+.positivo button:hover{
+	opacity:0.9;
+}
+
+
+
+/* feedBack negativo */
+
+.negativo{
+	background-color: #ffd0cf;
+	color:#a0130f;
+	cursor: pointer;
+}
+
+.negativo button{
+	background-color: #d33131;
+	color:#FFFFFF;
+	cursor: pointer;
+}
+
+.negativo button:hover{
+	opacity:0.9;
+}
+
+@media (max-width: 1023px) {
+	
+	#feedback{
+		padding: 5px;
+	}
+
+	.boton{
+		padding: 7px 20px 7px 20px;
+		border: 0px;
+		-webkit-border-radius: 15px;
+		-moz-border-radius: 15px;
+		border-radius: 15px;
+		font-size: 10pt;
+	}
+}
+
+@media (min-width: 1024px) {
+	
+	#feedback{
+		padding: 10px;
+	}
+
+	.boton{
+		padding: 15px 40px 15px 40px;
+		border: 0px;
+		-webkit-border-radius: 30px;
+		-moz-border-radius: 30px;
+		border-radius: 30px;
+		font-size: 20pt;
+	}
+}

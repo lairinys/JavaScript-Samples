@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Frutas</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+	<link rel="stylesheet" type="text/css" href="css/frutas.css">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans|Varela+Round&display=swap" rel="stylesheet">
+	<script type="text/javascript" src="js/jquery-3.4.1.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="js/frutas.js"></script>
+</head>
+<body>
+	<div id="contenedor">
+		
+		<section id="seleccion">
+			<div id="frutas">
+				<div id="fruta_0" class="fruta"></div>
+				<div id="fruta_1" class="fruta"></div>
+				<div id="fruta_2" class="fruta"></div>
+			</div>
+			<div id="informacion">
+				<div id="nombre"></div>
+				<div id="precio"></div>
+				<div id="seleccionada" class="imgFrutaSel" ><img id="imgFrutaSel" src="img/incognita.png" srcset="img/incognita.svg"></div>
+			</div>
+		</section>			
+		
+
+		<section id="cajones">			
+			<div id="contenedores">
+				<div id="contenedor_0" class="cont"></div>
+				<div id="contenedor_1" class="cont"></div>
+				<div id="contenedor_2" class="cont"></div>
+			</div>	
+			<div id="presentacion">
+				<div id="cajon_0" class="cajon">
+					<img class="imagen_cajon" src="img/cajon_de_frutas.png">
+				</div>
+					
+				<div id="signo_0" class="signo"></div>
+
+				<div id="cajon_1" class="cajon">
+					<img class="imagen_cajon" src="img/cajon_de_frutas.png">
+				</div>
+				<div id="signo_1" class="signo"></div>
+
+				<div id="cajon_2" class="cajon">
+					<img class="imagen_cajon" src="img/cajon_de_frutas.png">
+				</div>
+			</div>
+					
+		</section>
+
+		<section id="feedback">
+			<div id="mensaje"><p id="titulo"></p><p id="descripcion"></p></div>
+			<div id="boton" ><button id="aceptar" class="boton btnRevInac" disabled >REVISAR</button> </div>
+		</section>
+		
+	</div>
+</body>
+</html>

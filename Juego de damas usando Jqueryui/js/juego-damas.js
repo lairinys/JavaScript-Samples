@@ -22,7 +22,7 @@ const mensTurInv="Espera tu turno";
 
 // Funcion principal que se ejecuta una vez se haya cargado el documento html
 $(document).ready(function(){
-
+	console.log("al turno: "+alTurno);
 	$("#tablero").html(dibujarTablero());
 	
 	colorearCeldas();
@@ -241,19 +241,47 @@ function cumplirReglas(){
 			let baseCeldaFinal=xCeldaFinal.top+$(identificador).height();
 			let baseCeldaInicial=xCeldaInicial.top+$(identificador).height();
 
-			let comiendo=estaComiendo(ui.draggable.attr("id"),$(idFicha).parent().attr("id"),$(this).attr("id"));
+			/* let aComer=estaComiendo(ui.draggable.attr("id"),$(idFicha).parent().attr("id"),$(this).attr("id"));
 
-			if(!comiendo)
+			if(aComer==null)
 			{
 				minLeft=xCeldaInicial.left-$(identificador).width();
 				maxLeft=xCeldaInicial.left+$(identificador).width()*2;
 			}else{
 				minLeft=xCeldaInicial.left-$(identificador).width()*2;
 				maxLeft=xCeldaInicial.left+$(identificador).width()*3;
-			}
+			} */
+			let adjac=celdasSiguientes($(idFicha).parent().attr("id"));
+			console.log("identificador"+identificador);
+			console.log("adjacentes: "+adjac);
+			let enadjac=false;
+			if(puedeComer(idFicha)){
 
-			let maxY,minY;
-		
+			}else{
+				if(adjac.length>0){
+
+					for(let i=0;i<adjac.length;i++){
+						
+						if(identificador==adjac[0]){
+								alert("estoy aqui");
+							enadjac=true;
+						}
+					}
+					if(!enadjac){
+						movInvalido(idFicha,mensMovInv,"Solo se puede avanzar a las celdas diagonales inmediatas");
+						return(false);
+					}
+					else{
+						switchTurno();
+					}					
+
+				}
+
+			}
+			
+
+		//	let maxY,minY;
+		/*
 
 			let hijos=$(identificador).children('.ficha');
 			//No puede avanzar a una celda ocupada por otra ficha
@@ -311,20 +339,41 @@ function cumplirReglas(){
 					}
 
 					//Solo se puede avanzar a las celdas diagonales inmediatas
+					
 					if(xFicha.left<minLeft || fichaRight>maxLeft){
 						movInvalido(idFicha,mensMovInv,"Solo se puede avanzar a las celdas diagonales inmediatas");
 						return(false);
 					}
-					if(!comiendo)
+					$(idFicha).appendTo(identificador);
+					if(aComer!=null)
 					{
+						// Identifica la clase del bando contrario
+						if(alTurno=='fichaclara'){
+							contrario='.fichaoscura';
+							alTurnoNombre="Fichas Claras";
+							contrarioNombre="Fichas Oscuras";
+						}else{
+							contrario='.fichaclara';
+						}
+						// Elimina la ficha a comer
+						$(aComer).find(contrario).remove()
+
+						//asigna nueva celda padre a l ficha que come
 						$(idFicha).appendTo(identificador);
-						switchTurno();	
+
+						// Si no quedan fichas contrarias termina el juego y se indica al ganador
+						if($(".celdaoscura").children(contrario).length==0)
+						{
+							alert("Ganaron las "+alTurnoNombre+"!!!!!");
+						}
 					}
+					console.log("Puede comer:"+puedeComer(idFicha));
+					if(!puedeComer(idFicha)){
 
-
-					return(true);
+						switchTurno();
+					}
 				}
-			}
+			}*/
 		},
 		tolerance: "touch"
 	});	
@@ -353,6 +402,7 @@ function movInvalido(idFicha,mensaje,detalle){
 	$(idFicha).css("left", posLeft);
 }
 
+//Funcion que valida quien tiene el turno para jugar
 function mover(idFicha){
 
 	let x = $(idFicha).position();
@@ -371,7 +421,7 @@ function mover(idFicha){
 //Funcion que indica si una ficha es una reina
 function esReina(){return false;}
 
-//Funcion que indica si una ficha se esta comiendo a un contrario
+//Funcion que devuelve una posible ficha a comer
 function estaComiendo(idFicha,idCeldaAnterior,idCeldaNueva){
 
 	let datosCeldaA=idCeldaAnterior.split("_");
@@ -397,33 +447,73 @@ function estaComiendo(idFicha,idCeldaAnterior,idCeldaNueva){
 
 	let alTurnoNombre,contrarioNombre;
 	
-	// Verifica si en la celda intermedia se encuentra una ficha del bando contrario
-	if(alTurno=='fichaclara'){
-		contrario='.fichaoscura';
-		alTurnoNombre="Fichas Claras";
-		contrarioNombre="Fichas Oscuras";
-	}else{
-		contrario='.fichaclara';
-	}
 
 	let hijos=$(idCeldaM).children(contrario);
 
 
 	//Si hay una ficha contraria en la celda intermedia
 	if(hijos.length>0){
-		$(idCeldaM).find(contrario).remove();
-		
-		if($(".celdaoscura").children(contrario).length==0)
-		{
-			alert("Ganaron las "+alTurnoNombre+"!!!!!");
-		}
-		return true;
+		return idCeldaM;
 	}else
 	{
-		return false;
+		return null;
 	}
 }
 
+//Funcion que determina si una ficha tiene oportunidad de comer
+function puedeComer(idFicha){
+
+	let posiblePaso,x;
+	let padre=$(idFicha).parent().attr("id");
+	console.log("ficha: "+idFicha);
+	console.log("padre: "+padre);
+	let siguientes=celdasSiguientes(padre);
+	if(siguientes.length>0){	
+		for(let i=0;i<siguientes.length;i++){
+			if(estaComiendo(idFicha,padre,siguientes[i])!=null){
+				return true;
+			}			
+
+		}	
+	}
+	return false;
+
+}
+
+//Funcion que devuelve las celdas adjacentes
+function celdasSiguientes(idCelda){
+
+	let resultado=[];
+	let i=0;
+
+	let datosPadre=idCelda.split("_");
+
+	let posIzq=$.inArray(datosPadre[1], letrasArray)-1;
+
+	let posDer=$.inArray(datosPadre[1], letrasArray)+1;
+
+	if(alTurno=='fichaclara'){
+		fila=parseInt(datosPadre[2])+1;
+	}else{
+		fila=parseInt(datosPadre[2])-1;
+	}
+	console.log("posIzq: "+posIzq);
+	console.log("posIzq: "+posDer);
+	if(posIzq>0){
+		resultado[i]='#celda_'+letrasArray[posIzq]+'_'+fila;
+		i++;
+	}
+	if(posDer>0){
+		resultado[i]='#celda_'+letrasArray[posDer]+'_'+fila;
+	}	
+	//celdaIzq='#celda_'+letrasArray[posIzq]+'_'+fila;
+	//celdaDer='#celda_'+letrasArray[posDer]+'_'+fila;
+
+	
+	console.log("idCelda: "+idCelda);
+	console.log("resultado: "+resultado);
+	return resultado;
+}
 
 //Funcion que actualiza a quien le toca el turno de jugar
 function switchTurno(){
