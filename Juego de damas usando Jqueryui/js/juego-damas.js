@@ -228,7 +228,7 @@ function cumplirReglas(){
 	$(".celdaoscura").droppable({
 		drop:function(event,ui){
 			let identificador='#'+$(this).attr("id");
-			let minLeft,maxLeft
+			let minLeft,maxLeft,adjac,celdaIni,datosCeldaIni,datosCeldaFin, avance;
 
 			idFicha='#'+ui.draggable.attr("id");
 			let xFicha = $(idFicha).position();
@@ -240,21 +240,86 @@ function cumplirReglas(){
 
 			let baseCeldaFinal=xCeldaFinal.top+$(identificador).height();
 			let baseCeldaInicial=xCeldaInicial.top+$(identificador).height();
-			console.log("al turno:"+alTurno);
 
-			let adjac=celdasSiguientes($(idFicha).parent().attr("id"));	
-			console.log("Celdas adjacentes: "+adjac);
-			console.log("identificador: "+identificador);
+			celdaIni=$(idFicha).parent().attr("id");
+			datosCeldaIni=celdaIni.split("_");
+
+			datosCeldaFin=identificador.split("_");
+
+			adjac=celdasSiguientes(celdaIni);	
 			if($.inArray(identificador, adjac)>=0){
 				$(idFicha).appendTo(identificador);
-				switchTurno();
+				
+				avance=parseInt(datosCeldaIni[2])-parseInt(datosCeldaFin[2]);
+				if(avance==1 || avance==-1){
+					switchTurno();
+				}else{
+					//si avanzó mas de una fila porque comió a un contrario
+					removeBetween(datosCeldaIni,datosCeldaFin);
+					adjac=celdasSiguientes(identificador);
+					if(adjac.length==0){
+						switchTurno();
+					}else{
+						console.log("contenido de adjac: "+adjac);
+						mantenerTurno=false;
+						for(let i=0;i<adjac.length;i++){
+							opcion1=adjac[i].split("_");
+							filaIni=parseInt(datosCeldaFin[2]);
+							filaFin=parseInt(opcion1[2]);
+							avance=filaFin-filaIni;
+							if(avance>1 || avance<-1)
+							{
+								mantenerTurno=true;
+							}							
+						}
+						if(!mantenerTurno){
+							switchTurno();
+						}
+
+					}
+				}
+				
 			}else{
 				movInvalido(idFicha,mensMovInv,"Sólo puede moverse a las celdas adjacentes disponibles");
 			}
 
+
 		},
 		tolerance: "touch"
 	});	
+
+}
+
+//Funcion que remueve una ficha eliminada
+function removeBetween(celdaIni,celdaFin){
+	let filaIni,filaFin,filaInt,columIni,columFin,columInt, ficha;
+
+	filaIni=parseInt(celdaIni[2]);
+	filaFin=parseInt(celdaFin[2]);
+
+	columIni=$.inArray(celdaIni[1], letrasArray);
+	columFin=$.inArray(celdaFin[1], letrasArray);
+
+	if(filaFin>filaIni)
+	{
+		filaInt=filaFin-1;
+	}else
+	{
+		filaInt=filaIni-1;
+	}
+
+	if(columFin>columIni){
+		columInt=columFin-1;
+	}else
+	{
+		columInt=columIni-1;
+	}
+	celdaInt='#'+celdaId(letrasArray[columInt],filaInt);
+
+	
+	fichaInt='#'+$(celdaInt).children()[0].id;
+
+	$(fichaInt).remove();
 
 }
 
