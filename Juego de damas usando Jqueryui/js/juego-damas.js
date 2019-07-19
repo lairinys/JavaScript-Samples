@@ -22,7 +22,7 @@ const mensTurInv="Espera tu turno";
 
 // Funcion principal que se ejecuta una vez se haya cargado el documento html
 $(document).ready(function(){
-	console.log("al turno: "+alTurno);
+
 	$("#tablero").html(dibujarTablero());
 	
 	colorearCeldas();
@@ -240,124 +240,18 @@ function cumplirReglas(){
 
 			let baseCeldaFinal=xCeldaFinal.top+$(identificador).height();
 			let baseCeldaInicial=xCeldaInicial.top+$(identificador).height();
+			console.log("al turno:"+alTurno);
 
-
-			let adjac=celdasSiguientes($(idFicha).parent().attr("id"));
-			console.log(adjac);
-			console.log("identificador"+identificador);
-			console.log("adjacentes: "+adjac);
-
-			if(puedeComer(idFicha)){
-
+			let adjac=celdasSiguientes($(idFicha).parent().attr("id"));	
+			console.log("Celdas adjacentes: "+adjac);
+			console.log("identificador: "+identificador);
+			if($.inArray(identificador, adjac)>=0){
+				$(idFicha).appendTo(identificador);
+				switchTurno();
 			}else{
-				if(adjac.length>0){
-					if($.inArray(identificador, adjac)<0){
-						movInvalido(idFicha,mensMovInv,"Solo se puede avanzar a las celdas diagonales inmediatas");
-						return(false);
-					}
-					else{
-						switchTurno();
-					}					
-
-				}
-
+				movInvalido(idFicha,mensMovInv,"Sólo puede moverse a las celdas adjacentes disponibles");
 			}
-			
 
-		//	let maxY,minY;
-		/*
-
-			let hijos=$(identificador).children('.ficha');
-			//No puede avanzar a una celda ocupada por otra ficha
-			if(hijos.length>0){
-				for(let i=0;i<hijos.length;i++)
-				{
-					console.log("hijo "+i+": "+hijos[i].id);
-					if(hijos[i].id!=ui.draggable.attr("id")){
-						movInvalido(idFicha,mensMovInv,"No puede avanzar a una celda ocupada por otra ficha");
-					}
-					
-				}	
-
-			}else{
-				
-				if(esReina()){
-
-				}
-				else{ 
-
-					if($(idFicha).hasClass("fichaclara")){
-
-						//Las fichas claras deben subir
-						if(xFicha.top>posTop){
-							movInvalido(idFicha,mensMovInv,"No puedes retroceder");
-							return(false);
-						}else{
-							//Solo pueden avanzar un paso a la vez a menos que esten comiendo al contrario
-							if(xFicha.top>maxY){
-
-								movInvalido(idFicha,mensMovInv,"Sólo se debe avanzar un paso a la vez");
-								return(false);									
-								
-							}							
-						}
-
-					}else{
-						//Las fichas oscuras deben bajar
-
-
-						if(baseFicha<minY){
-
-							
-							movInvalido(idFicha,mensMovInv,"No puedes retroceder");
-							return(false);
-						}else{
-							//Solo pueden avanzar un paso a la vez a menos que esten comiendo al contrario
-							if(xFicha.top>maxY){
-								
-								movInvalido(idFicha,mensMovInv,"Sólo se debe avanzar un paso a la vez");
-								return(false);									
-								
-							}							
-						}
-					}
-
-					//Solo se puede avanzar a las celdas diagonales inmediatas
-					
-					if(xFicha.left<minLeft || fichaRight>maxLeft){
-						movInvalido(idFicha,mensMovInv,"Solo se puede avanzar a las celdas diagonales inmediatas");
-						return(false);
-					}
-					$(idFicha).appendTo(identificador);
-					if(aComer!=null)
-					{
-						// Identifica la clase del bando contrario
-						if(alTurno=='fichaclara'){
-							contrario='.fichaoscura';
-							alTurnoNombre="Fichas Claras";
-							contrarioNombre="Fichas Oscuras";
-						}else{
-							contrario='.fichaclara';
-						}
-						// Elimina la ficha a comer
-						$(aComer).find(contrario).remove()
-
-						//asigna nueva celda padre a l ficha que come
-						$(idFicha).appendTo(identificador);
-
-						// Si no quedan fichas contrarias termina el juego y se indica al ganador
-						if($(".celdaoscura").children(contrario).length==0)
-						{
-							alert("Ganaron las "+alTurnoNombre+"!!!!!");
-						}
-					}
-					console.log("Puede comer:"+puedeComer(idFicha));
-					if(!puedeComer(idFicha)){
-
-						switchTurno();
-					}
-				}
-			}*/
 		},
 		tolerance: "touch"
 	});	
@@ -405,71 +299,15 @@ function mover(idFicha){
 //Funcion que indica si una ficha es una reina
 function esReina(){return false;}
 
-//Funcion que devuelve una posible ficha a comer
-function estaComiendo(idFicha,idCeldaAnterior,idCeldaNueva){
 
-	let datosCeldaA=idCeldaAnterior.split("_");
-	let datosCeldaN=idCeldaNueva.split("_");
-	let columCeldaM,filaCeldaM,contrario,idCeldaM;
-
-	if($.inArray(datosCeldaA[1], letrasArray)>$.inArray(datosCeldaN[1], letrasArray)){
-
-		columCeldaM=$.inArray(datosCeldaA[1], letrasArray)-1;	
-	}else{
-		columCeldaM=$.inArray(datosCeldaA[1], letrasArray)+1;	
-	}
-
-	if(datosCeldaA[2]>datosCeldaN[2]){
-		filaCeldaM=parseInt(datosCeldaA[2])-1;
-	}else{
-		filaCeldaM=parseInt(datosCeldaA[2])+1;
-	}
-
-	idCeldaM='#celda_'+letrasArray[columCeldaM]+"_"+filaCeldaM;
-
-	console.log("Celda Intermedia: "+idCeldaM);
-
-	let alTurnoNombre,contrarioNombre;
-	
-
-	let hijos=$(idCeldaM).children(contrario);
-
-
-	//Si hay una ficha contraria en la celda intermedia
-	if(hijos.length>0){
-		return idCeldaM;
-	}else
-	{
-		return null;
-	}
-}
-
-//Funcion que determina si una ficha tiene oportunidad de comer
-function puedeComer(idFicha){
-
-	let posiblePaso,x;
-	let padre=$(idFicha).parent().attr("id");
-	console.log("ficha: "+idFicha);
-	console.log("padre: "+padre);
-	let siguientes=celdasSiguientes(padre);
-	if(siguientes.length>0){	
-		for(let i=0;i<siguientes.length;i++){
-			if(estaComiendo(idFicha,padre,siguientes[i])!=null){
-				return true;
-			}			
-
-		}	
-	}
-	return false;
-
-}
 
 //Funcion que devuelve las celdas adjacentes
 function celdasSiguientes(idCelda){
 
+
 	let resultado=[];
 	let i=0;
-	let posIzq,posDer;
+	let posIzq,posDer,celdaIzq="",celdaDer="",f,fichaIzq,fichaDer;
 
 	let datosPadre=idCelda.split("_");
 
@@ -477,19 +315,117 @@ function celdasSiguientes(idCelda){
 		fila=parseInt(datosPadre[2])+1;
 		posIzq=$.inArray(datosPadre[1], letrasArray)-1;
 		posDer=$.inArray(datosPadre[1], letrasArray)+1;
+		if(posIzq>=0 && fila <8){
+			celdaIzq='#celda_'+letrasArray[posIzq]+'_'+fila;
+			//Verifica si la celda siguiente a su izquierda esta ocupada
+
+			if($(celdaIzq).children().length>0)
+			{
+				//Valida si el ocupante de la celda siguiente es un oponente
+				console.log("hijo de la izquierda: "+$(celdaIzq).children()[0].id);
+				console.log($($(celdaIzq).children()[0].id).hasClass(alTurno));
+				fichaIzq='#'+$(celdaIzq).children()[0].id;
+				if(!$(fichaIzq).hasClass(alTurno)){
+					
+					if(posIzq-1>=0 && fila+1<8){
+						posIzq--;
+						f=fila+1;
+						celdaIzq='#celda_'+letrasArray[posIzq]+'_'+f;
+					}else{
+						celdaIzq="";
+					}	
+				}else{
+					celdaIzq="";
+				}
+			}
+		
+		}
+		if(posDer>=0 && fila <8){
+			//resultado[i]='#celda_'+letrasArray[posDer]+'_'+fila;
+			
+			celdaDer='#celda_'+letrasArray[posDer]+'_'+fila;
+			//Verifica si la celda siguiente a su izquierda esta ocupada
+			
+			if($(celdaDer).children().length>0)
+			{
+				console.log("hijo de la derecha: "+$(celdaDer).children()[0].id);
+				console.log($($(celdaDer).children()[0].id).hasClass(alTurno));
+				//Valida si el ocupante de la celda siguiente es un oponente
+				fichaDer='#'+$(celdaDer).children()[0].id;
+				if(!$(fichaDer).hasClass(alTurno)){
+					if(posDer+1<8 && fila+1<8){
+						posDer++;
+						f=fila+1;
+						celdaDer='#celda_'+letrasArray[posDer]+'_'+f;
+					}else{
+						celdaDer="";
+					}	
+				}else{
+					celdaDer="";
+				}
+			}
+
+		}
 	}else{
 
 		fila=parseInt(datosPadre[2])-1;
 		posIzq=$.inArray(datosPadre[1], letrasArray)+1;
 		posDer=$.inArray(datosPadre[1], letrasArray)-1;
+		if(posIzq<8 && fila >=0){
+			celdaIzq='#celda_'+letrasArray[posIzq]+'_'+fila;
+			//Verifica si la celda siguiente a su izquierda est[a ocupada]
+
+			if($(celdaIzq).children().length>0)
+			{
+				console.log("hijo de la izquierda: "+$(celdaIzq).children()[0].id);
+				console.log($($(celdaIzq).children()[0].id).hasClass(alTurno));
+				//Valida si el ocupante de la celda siguiente es un oponente
+				fichaIzq='#'+$(celdaIzq).children()[0].id;
+				if(!$(fichaIzq).hasClass(alTurno)){
+					if(posIzq+1<8 && fila-1>=0){
+						posIzq++;
+						f=fila-1;
+						celdaIzq='#celda_'+letrasArray[posIzq]+'_'+f;
+					}else{
+						celdaIzq="";
+					}	
+				}else{
+					celdaIzq="";
+				}
+			}
+			
+		}
+		if(posDer>=0 && fila >=0){
+			//
+			celdaDer='#celda_'+letrasArray[posDer]+'_'+fila;
+			//Verifica si la celda siguiente a su izquierda est[a ocupada]
+			if($(celdaDer).children().length>0)
+			{
+				//Valida si el ocupante de la celda siguiente es un oponente
+				console.log("hijo de la derecha: "+$(celdaDer).children()[0].id);
+				console.log($($(celdaDer).children()[0].id).hasClass(alTurno));
+				fichaDer='#'+$(celdaDer).children()[0].id;
+				if(!$(fichaDer).hasClass(alTurno)){
+					if(posDer-1>=0 && fila-1>=0){
+						posDer--;
+						f=fila-1;
+						celdaDer='#celda_'+letrasArray[posDer]+'_'+f;
+					}else{
+						celdaDer="";
+					}
+				}else{
+					celdaDer="";
+				}
+			}
+		}
 	}
 
-	if(posIzq>=0){
-		resultado[i]='#celda_'+letrasArray[posIzq]+'_'+fila;
+	if(celdaIzq!=""){
+		resultado[i]=celdaIzq;
 		i++;
 	}
-	if(posDer>=0){
-		resultado[i]='#celda_'+letrasArray[posDer]+'_'+fila;
+	if(celdaDer!=""){
+		resultado[i]=celdaDer;
 	}	
 
 	return resultado;
