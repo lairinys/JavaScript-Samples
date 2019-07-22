@@ -246,21 +246,27 @@ function cumplirReglas(){
 
 			datosCeldaFin=identificador.split("_");
 
-			adjac=celdasSiguientes(celdaIni);	
+			adjac=celdasSiguientes(celdaIni);
 			if($.inArray(identificador, adjac)>=0){
 				$(idFicha).appendTo(identificador);
-				
+				if(alTurno=="fichaclara" && parseInt(datosCeldaFin[2])==8){
+					$(idFicha).addClass("reina");
+				}
+				if(alTurno=="fichaoscura" && parseInt(datosCeldaFin[2])==1){
+					$(idFicha).addClass("reina");
+				}				
 				avance=parseInt(datosCeldaIni[2])-parseInt(datosCeldaFin[2]);
 				if(avance==1 || avance==-1){
 					switchTurno();
 				}else{
 					//si avanzó mas de una fila porque comió a un contrario
 					removeBetween(datosCeldaIni,datosCeldaFin);
-					adjac=celdasSiguientes(identificador);
+
+					adjac=celdasSiguientes($(this).attr("id"));
 					if(adjac.length==0){
 						switchTurno();
 					}else{
-						console.log("contenido de adjac: "+adjac);
+					
 						mantenerTurno=false;
 						for(let i=0;i<adjac.length;i++){
 							opcion1=adjac[i].split("_");
@@ -285,7 +291,8 @@ function cumplirReglas(){
 
 
 		},
-		tolerance: "touch"
+		tolerance: "touch",
+		hoverClass: "celdaover",
 	});	
 
 }
@@ -372,30 +379,40 @@ function celdasSiguientes(idCelda){
 
 	let resultado=[];
 	let i=0;
-	let posIzq,posDer,celdaIzq="",celdaDer="",f,fichaIzq,fichaDer;
+	let posIzq,posDer,celdaIzq="",celdaDer="",celdaIzqI="",celdaDerI="",f,fichaIzq,fichaDer,p;
 
 	let datosPadre=idCelda.split("_");
-
+	
+	let celda='#'+idCelda;
+	let ficha='#'+$(celda).children()[0].id;
+	
 	if(alTurno=='fichaclara'){
+		
+
 		fila=parseInt(datosPadre[2])+1;
+
 		posIzq=$.inArray(datosPadre[1], letrasArray)-1;
 		posDer=$.inArray(datosPadre[1], letrasArray)+1;
-		if(posIzq>=0 && fila <8){
+		
+
+		if(posIzq>=0 && fila <=8){
 			celdaIzq='#celda_'+letrasArray[posIzq]+'_'+fila;
 			//Verifica si la celda siguiente a su izquierda esta ocupada
 
 			if($(celdaIzq).children().length>0)
 			{
 				//Valida si el ocupante de la celda siguiente es un oponente
-				console.log("hijo de la izquierda: "+$(celdaIzq).children()[0].id);
-				console.log($($(celdaIzq).children()[0].id).hasClass(alTurno));
+
 				fichaIzq='#'+$(celdaIzq).children()[0].id;
 				if(!$(fichaIzq).hasClass(alTurno)){
-					
-					if(posIzq-1>=0 && fila+1<8){
-						posIzq--;
+					//si la ficha a la izquierda es un contrario
+					if(posIzq-1>=0 && fila+1<=8){
+						p=posIzq-1;
 						f=fila+1;
-						celdaIzq='#celda_'+letrasArray[posIzq]+'_'+f;
+						celdaIzq='#celda_'+letrasArray[p]+'_'+f;
+						if($(celdaIzq).children().length>0){
+							celdaIzq="";
+						}
 					}else{
 						celdaIzq="";
 					}	
@@ -403,9 +420,9 @@ function celdasSiguientes(idCelda){
 					celdaIzq="";
 				}
 			}
-		
 		}
-		if(posDer>=0 && fila <8){
+	
+		if(posDer<8 && fila <=8){
 			//resultado[i]='#celda_'+letrasArray[posDer]+'_'+fila;
 			
 			celdaDer='#celda_'+letrasArray[posDer]+'_'+fila;
@@ -413,15 +430,16 @@ function celdasSiguientes(idCelda){
 			
 			if($(celdaDer).children().length>0)
 			{
-				console.log("hijo de la derecha: "+$(celdaDer).children()[0].id);
-				console.log($($(celdaDer).children()[0].id).hasClass(alTurno));
 				//Valida si el ocupante de la celda siguiente es un oponente
 				fichaDer='#'+$(celdaDer).children()[0].id;
 				if(!$(fichaDer).hasClass(alTurno)){
-					if(posDer+1<8 && fila+1<8){
-						posDer++;
+					if(posDer+1<8 && fila+1<=8){
+						p=posDer+1;
 						f=fila+1;
-						celdaDer='#celda_'+letrasArray[posDer]+'_'+f;
+						celdaDer='#celda_'+letrasArray[p]+'_'+f;
+						if($(celdaDer).children().length>0){
+							celdaDer="";
+						}
 					}else{
 						celdaDer="";
 					}	
@@ -429,28 +447,96 @@ function celdasSiguientes(idCelda){
 					celdaDer="";
 				}
 			}
-
+			// Si es reina verifica si la celda anterior a su derecha esta ocupada
+		}else{
+			celdaDer="";
 		}
-	}else{
 
+			// Si es reina verifica si la celda anterior a su izquierda esta ocupada
+					
+		if($(ficha).hasClass("reina"))
+		{
+			posDer=$.inArray(datosPadre[1], letrasArray)-1;
+			fila=parseInt(datosPadre[2])-1;
+			if(posDer>=0 && fila>0){
+				celdaDerI='#celda_'+letrasArray[posDer]+'_'+fila;
+
+				//si la celda esta ocupada
+				if($(celdaDerI).children().length>0)
+				{
+					//Valida si el ocupante de la celda siguiente es un oponente
+
+					fichaDer='#'+$(celdaDerI).children()[0].id;
+
+					if(!$(fichaDer).hasClass(alTurno)){
+						//si la ficha a la izquierda es un contrario
+						if(posDer-1>=0 && fila>0){
+							p=posDer-1;
+							f=fila-1;
+							celdaDerI='#celda_'+letrasArray[p]+'_'+f;
+							if($(celdaDerI).children().length>0){
+								celdaDerI="";
+							}
+						}else{
+							celdaDerI="";
+						}	
+					}else{
+						celdaDerI="";
+					}
+				}
+			}else{
+				celdaDerI="";
+			}
+
+			posIzq=$.inArray(datosPadre[1], letrasArray)+1;	
+			fila=parseInt(datosPadre[2])-1;
+			celdaIzqI='#celda_'+letrasArray[posIzq]+'_'+fila;
+			//si la celda esta ocupada
+			if($(celdaIzqI).children().length>0)
+			{
+				//Valida si el ocupante de la celda siguiente es un oponente
+
+				fichaizq='#'+$(celdaIzqI).children()[0].id;
+				if(!$(fichaIzq).hasClass(alTurno)){
+					//si la ficha a la izquierda es un contrario
+					if(posIzq+1<8 && fila>=0){
+						p=posIzq+1;
+						f=fila-1;
+						celdaIzqI='#celda_'+letrasArray[p]+'_'+f;
+						if($(celdaIzqI).children().length>0){
+							celdaIzqI="";
+						}
+					}else{
+						celdaIzqI="";
+					}	
+				}else{
+					celdaIzqI="";
+				}
+			}
+		}			
+	}// Al turno fichas oscuras
+	else
+	{
 		fila=parseInt(datosPadre[2])-1;
 		posIzq=$.inArray(datosPadre[1], letrasArray)+1;
 		posDer=$.inArray(datosPadre[1], letrasArray)-1;
-		if(posIzq<8 && fila >=0){
+		if(posIzq<8 && fila >0){
 			celdaIzq='#celda_'+letrasArray[posIzq]+'_'+fila;
 			//Verifica si la celda siguiente a su izquierda est[a ocupada]
 
 			if($(celdaIzq).children().length>0)
 			{
-				console.log("hijo de la izquierda: "+$(celdaIzq).children()[0].id);
-				console.log($($(celdaIzq).children()[0].id).hasClass(alTurno));
+				
 				//Valida si el ocupante de la celda siguiente es un oponente
 				fichaIzq='#'+$(celdaIzq).children()[0].id;
 				if(!$(fichaIzq).hasClass(alTurno)){
-					if(posIzq+1<8 && fila-1>=0){
-						posIzq++;
+					if(posIzq+1<8 && fila-1>0){
+						p=posIzq+1;
 						f=fila-1;
-						celdaIzq='#celda_'+letrasArray[posIzq]+'_'+f;
+						celdaIzq='#celda_'+letrasArray[p]+'_'+f;
+						if($(celdaIzq).children().length>0){
+							celdaIzq="";
+						}
 					}else{
 						celdaIzq="";
 					}	
@@ -460,21 +546,24 @@ function celdasSiguientes(idCelda){
 			}
 			
 		}
-		if(posDer>=0 && fila >=0){
-			//
+
+		if(posDer>=0 && fila>0){
 			celdaDer='#celda_'+letrasArray[posDer]+'_'+fila;
 			//Verifica si la celda siguiente a su izquierda est[a ocupada]
+
 			if($(celdaDer).children().length>0)
 			{
 				//Valida si el ocupante de la celda siguiente es un oponente
-				console.log("hijo de la derecha: "+$(celdaDer).children()[0].id);
-				console.log($($(celdaDer).children()[0].id).hasClass(alTurno));
+
 				fichaDer='#'+$(celdaDer).children()[0].id;
 				if(!$(fichaDer).hasClass(alTurno)){
 					if(posDer-1>=0 && fila-1>=0){
-						posDer--;
+						p=posDer-1;
 						f=fila-1;
-						celdaDer='#celda_'+letrasArray[posDer]+'_'+f;
+						celdaDer='#celda_'+letrasArray[p]+'_'+f;
+						if($(celdaDer).children().length>0){
+							celdaDer="";
+						}
 					}else{
 						celdaDer="";
 					}
@@ -482,7 +571,72 @@ function celdasSiguientes(idCelda){
 					celdaDer="";
 				}
 			}
+		}else{
+			celdaDer="";
 		}
+				
+		if($(ficha).hasClass("reina"))
+		{
+
+			posDer=$.inArray(datosPadre[1], letrasArray)+1;
+			
+			fila=parseInt(datosPadre[2])+1;
+			celdaDerI='#celda_'+letrasArray[posDer]+'_'+fila;
+
+			//si la celda esta ocupada
+			if($(celdaDerI).children().length>0)
+			{
+				//Valida si el ocupante de la celda siguiente es un oponente
+
+				fichaDer='#'+$(celdaDerI).children()[0].id;
+				if(!$(fichaDer).hasClass(alTurno)){
+					//si la ficha a la izquierda es un contrario
+					if(posDer+1<8 && fila<=8){
+						p=posDer+1;
+						f=fila+1;
+						celdaDerI='#celda_'+letrasArray[p]+'_'+f;
+						if($(celdaDerI).children().length>0){
+							celdaDerI="";
+						}
+					}else{
+						celdaDerI="";
+					}	
+				}else{
+					celdaDerI="";
+				}
+			}
+		
+			posIzq=$.inArray(datosPadre[1], letrasArray)-1;
+			fila=parseInt(datosPadre[2])+1;
+			if(posIzq>=0 && fila<=8){
+				celdaIzqI='#celda_'+letrasArray[posIzq]+'_'+fila;
+
+				//si la celda esta ocupada
+				if($(celdaIzqI).children().length>0)
+				{
+					//Valida si el ocupante de la celda siguiente es un oponente
+
+					fichaIzq='#'+$(celdaIzqI).children()[0].id;
+					if(!$(fichaIzq).hasClass(alTurno)){
+						//si la ficha a la izquierda es un contrario
+						if(posIzq+1<8 && fila<=8){
+							p=posIzq+1;
+							f=fila+1;
+							celdaIzqI='#celda_'+letrasArray[p]+'_'+f;
+							if($(celdaIzqI).children().length>0){
+								celdaIzqI="";
+							}
+						}else{
+							celdaIzqI="";
+						}	
+					}else{
+						celdaIzqI="";
+					}
+				}
+			}else{
+				celdaIzqI="";
+			}
+		}			
 	}
 
 	if(celdaIzq!=""){
@@ -491,7 +645,15 @@ function celdasSiguientes(idCelda){
 	}
 	if(celdaDer!=""){
 		resultado[i]=celdaDer;
+		i++;
 	}	
+	if(celdaIzqI!=""){
+		resultado[i]=celdaIzqI;
+		i++;
+	}
+		if(celdaDerI!=""){
+		resultado[i]=celdaDerI;
+	}
 
 	return resultado;
 }

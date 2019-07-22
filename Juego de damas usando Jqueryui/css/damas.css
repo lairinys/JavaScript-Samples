@@ -29,7 +29,7 @@
 
 }
 .celdaover{
-	border: 5px solid red;
+	border: 1px solid red;
 }
 .ficha{
 	width: 2rem;
@@ -40,4 +40,10 @@
 }
 .celdaclara{
 	background-color: 
+}
+.reina{
+  background-color: rgba(0,0,0,0.8);
+  background-image:url(../img/crown.png);
+  background-size: contain;
+  border: 1px solid yellow;
 }
