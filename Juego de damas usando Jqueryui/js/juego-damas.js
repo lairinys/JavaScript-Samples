@@ -107,6 +107,7 @@ function colorearCeldas(){
 	$(".celdaclara").css("background-color", color_celdaclara);
 	$(".celdaoscura").css("background-color", color_celdaoscura);
 
+
 }
 
 //Funcion que colorea las fichas
@@ -229,6 +230,7 @@ function cumplirReglas(){
 		drop:function(event,ui){
 			let identificador='#'+$(this).attr("id");
 			let minLeft,maxLeft,adjac,celdaIni,datosCeldaIni,datosCeldaFin, avance;
+			let ganador;
 
 			idFicha='#'+ui.draggable.attr("id");
 			let xFicha = $(idFicha).position();
@@ -241,59 +243,113 @@ function cumplirReglas(){
 			let baseCeldaFinal=xCeldaFinal.top+$(identificador).height();
 			let baseCeldaInicial=xCeldaInicial.top+$(identificador).height();
 
-			celdaIni=$(idFicha).parent().attr("id");
-			datosCeldaIni=celdaIni.split("_");
 
-			datosCeldaFin=identificador.split("_");
 
-			adjac=celdasSiguientes(celdaIni);
-			if($.inArray(identificador, adjac)>=0){
-				$(idFicha).appendTo(identificador);
-				if(alTurno=="fichaclara" && parseInt(datosCeldaFin[2])==8){
-					$(idFicha).addClass("reina");
-				}
-				if(alTurno=="fichaoscura" && parseInt(datosCeldaFin[2])==1){
-					$(idFicha).addClass("reina");
-				}				
-				avance=parseInt(datosCeldaIni[2])-parseInt(datosCeldaFin[2]);
-				if(avance==1 || avance==-1){
-					switchTurno();
-				}else{
-					//si avanzó mas de una fila porque comió a un contrario
-					removeBetween(datosCeldaIni,datosCeldaFin);
+			//solo se permite mover las fichas que tienen el turno de jugar
+			if (!$(idFicha).hasClass(alTurno)){
 
-					adjac=celdasSiguientes($(this).attr("id"));
-					if(adjac.length==0){
-						switchTurno();
-					}else{
-					
-						mantenerTurno=false;
-						for(let i=0;i<adjac.length;i++){
-							opcion1=adjac[i].split("_");
-							filaIni=parseInt(datosCeldaFin[2]);
-							filaFin=parseInt(opcion1[2]);
-							avance=filaFin-filaIni;
-							if(avance>1 || avance<-1)
-							{
-								mantenerTurno=true;
-							}							
-						}
-						if(!mantenerTurno){
-							switchTurno();
-						}
-
-					}
-				}
+				movInvalido(idFicha,mensTurInv,"Le toca jugar al equipo contrario");
 				
 			}else{
-				movInvalido(idFicha,mensMovInv,"Sólo puede moverse a las celdas adjacentes disponibles");
+
+				//Si el equipo al turno no ha sido bloqueado
+
+					celdaIni=$(idFicha).parent().attr("id");
+					datosCeldaIni=celdaIni.split("_");
+					datosCeldaFin=identificador.split("_");
+					adjac=celdasSiguientes(celdaIni);
+
+					if($.inArray(identificador, adjac)>=0){
+						$(idFicha).appendTo(identificador);
+						//La ficha que llegue a la primera fila del equipo contrario se convierte en reina
+						if(alTurno=="fichaclara" && parseInt(datosCeldaFin[2])==8){
+							$(idFicha).addClass("reina");
+						}
+						if(alTurno=="fichaoscura" && parseInt(datosCeldaFin[2])==1){
+							$(idFicha).addClass("reina");
+						}				
+						avance=parseInt(datosCeldaIni[2])-parseInt(datosCeldaFin[2]);
+						
+						
+						if(avance==1 || avance==-1){
+							switchTurno();
+						}else{
+							// elimina una ficha del equipo contrario
+							removeBetween(datosCeldaIni,datosCeldaFin);
+							// si ambos equipos conservan fichas continua el juego
+							if ( $(".fichaclara").get().length > 0 && $(".fichaoscura").get().length > 0  ) {
+
+								adjac=celdasSiguientes($(this).attr("id"));
+								if(adjac.length==0){
+									switchTurno();
+								}else{
+								
+									mantenerTurno=false;
+									for(let i=0;i<adjac.length;i++){
+										opcion1=adjac[i].split("_");
+										filaIni=parseInt(datosCeldaFin[2]);
+										filaFin=parseInt(opcion1[2]);
+										avance=filaFin-filaIni;
+										if(avance>1 || avance<-1)
+										{
+											mantenerTurno=true;
+										}							
+									}
+									if(!mantenerTurno){
+										switchTurno();
+									}
+
+								}
+
+							}else{
+								
+								if(alTurno=="fichaclara"){ganador="equipo de fichas claras";}
+									else{ganador="equipo de fichas oscuras";}
+								alert("El juego ha terminado, ha ganado el "+ganador);
+								$('.ficha').draggable( "destroy" );
+							}
+						}
+						if(bloqueado()){
+							if(alTurno=="fichaclara"){ganador="equipo de fichas oscuras";}
+							else{ganador="equipo de fichas claras";}
+							alert("Juego bloqueado, ha ganado el "+ganador);
+							$('.ficha').draggable( "destroy" );
+						}
+							
+					}else{
+						movInvalido(idFicha,mensMovInv,"Sólo puede moverse a las celdas adjacentes disponibles");
+					}
+
+				
+
 			}
-
-
+			
 		},
 		tolerance: "touch",
 		hoverClass: "celdaover",
 	});	
+
+}
+
+//Funcion que determina si el equipo al turno ha sido bloqueado
+function bloqueado(){
+
+	let idFicha,contrario,idCelda;
+
+	claseAlTurno='.'+alTurno;
+	console.log("***********  "+alTurno+"  *************");
+	for(let i=0; i<$(claseAlTurno).length;i++)
+	{
+	  idFicha='#'+$(claseAlTurno)[i].id;
+	  idCelda=$(idFicha).parent().attr("id");
+	  console.log("id celda:"+ idCelda);
+	  if(celdasSiguientes(idCelda).length>0){
+	  	return false;
+
+	  }
+	}
+
+	return true;
 
 }
 
@@ -328,6 +384,8 @@ function removeBetween(celdaIni,celdaFin){
 
 	$(fichaInt).remove();
 
+
+
 }
 
 //Funcion para crear los ids de las celdas
@@ -359,17 +417,9 @@ function mover(idFicha){
 	posTop=x.top;
 	posLeft=x.left;
 
-	//solo se permite mover las fichas que tienen el turno de jugar
-	if (!$(idFicha).hasClass(alTurno)){
 
-		movInvalido(idFicha,mensTurInv,"Le toca jugar al bando contrario");
-		
-	}
 
 }
-
-//Funcion que indica si una ficha es una reina
-function esReina(){return false;}
 
 
 
@@ -378,15 +428,21 @@ function celdasSiguientes(idCelda){
 
 
 	let resultado=[];
-	let i=0;
+	let i=0, claseFicha;
 	let posIzq,posDer,celdaIzq="",celdaDer="",celdaIzqI="",celdaDerI="",f,fichaIzq,fichaDer,p;
 
 	let datosPadre=idCelda.split("_");
 	
 	let celda='#'+idCelda;
 	let ficha='#'+$(celda).children()[0].id;
+
+	if($(ficha).hasClass('fichaclara')){
+		claseFicha='fichaclara';
+	}else{
+		claseFicha='fichaoscura';
+	}
 	
-	if(alTurno=='fichaclara'){
+	if(claseFicha=='fichaclara'){
 		
 
 		fila=parseInt(datosPadre[2])+1;
@@ -404,7 +460,7 @@ function celdasSiguientes(idCelda){
 				//Valida si el ocupante de la celda siguiente es un oponente
 
 				fichaIzq='#'+$(celdaIzq).children()[0].id;
-				if(!$(fichaIzq).hasClass(alTurno)){
+				if(!$(fichaIzq).hasClass(claseFicha)){
 					//si la ficha a la izquierda es un contrario
 					if(posIzq-1>=0 && fila+1<=8){
 						p=posIzq-1;
@@ -432,7 +488,7 @@ function celdasSiguientes(idCelda){
 			{
 				//Valida si el ocupante de la celda siguiente es un oponente
 				fichaDer='#'+$(celdaDer).children()[0].id;
-				if(!$(fichaDer).hasClass(alTurno)){
+				if(!$(fichaDer).hasClass(claseFicha)){
 					if(posDer+1<8 && fila+1<=8){
 						p=posDer+1;
 						f=fila+1;
@@ -468,7 +524,7 @@ function celdasSiguientes(idCelda){
 
 					fichaDer='#'+$(celdaDerI).children()[0].id;
 
-					if(!$(fichaDer).hasClass(alTurno)){
+					if(!$(fichaDer).hasClass(claseFicha)){
 						//si la ficha a la izquierda es un contrario
 						if(posDer-1>=0 && fila>0){
 							p=posDer-1;
@@ -497,9 +553,9 @@ function celdasSiguientes(idCelda){
 				//Valida si el ocupante de la celda siguiente es un oponente
 
 				fichaizq='#'+$(celdaIzqI).children()[0].id;
-				if(!$(fichaIzq).hasClass(alTurno)){
+				if(!$(fichaIzq).hasClass(claseFicha)){
 					//si la ficha a la izquierda es un contrario
-					if(posIzq+1<8 && fila>=0){
+					if(posIzq+1<8 && fila>0){
 						p=posIzq+1;
 						f=fila-1;
 						celdaIzqI='#celda_'+letrasArray[p]+'_'+f;
@@ -529,7 +585,7 @@ function celdasSiguientes(idCelda){
 				
 				//Valida si el ocupante de la celda siguiente es un oponente
 				fichaIzq='#'+$(celdaIzq).children()[0].id;
-				if(!$(fichaIzq).hasClass(alTurno)){
+				if(!$(fichaIzq).hasClass(claseFicha)){
 					if(posIzq+1<8 && fila-1>0){
 						p=posIzq+1;
 						f=fila-1;
@@ -556,8 +612,8 @@ function celdasSiguientes(idCelda){
 				//Valida si el ocupante de la celda siguiente es un oponente
 
 				fichaDer='#'+$(celdaDer).children()[0].id;
-				if(!$(fichaDer).hasClass(alTurno)){
-					if(posDer-1>=0 && fila-1>=0){
+				if(!$(fichaDer).hasClass(claseFicha)){
+					if(posDer-1>=0 && fila-1>0){
 						p=posDer-1;
 						f=fila-1;
 						celdaDer='#celda_'+letrasArray[p]+'_'+f;
@@ -589,7 +645,7 @@ function celdasSiguientes(idCelda){
 				//Valida si el ocupante de la celda siguiente es un oponente
 
 				fichaDer='#'+$(celdaDerI).children()[0].id;
-				if(!$(fichaDer).hasClass(alTurno)){
+				if(!$(fichaDer).hasClass(claseFicha)){
 					//si la ficha a la izquierda es un contrario
 					if(posDer+1<8 && fila<=8){
 						p=posDer+1;
@@ -617,10 +673,10 @@ function celdasSiguientes(idCelda){
 					//Valida si el ocupante de la celda siguiente es un oponente
 
 					fichaIzq='#'+$(celdaIzqI).children()[0].id;
-					if(!$(fichaIzq).hasClass(alTurno)){
+					if(!$(fichaIzq).hasClass(claseFicha)){
 						//si la ficha a la izquierda es un contrario
-						if(posIzq+1<8 && fila<=8){
-							p=posIzq+1;
+						if(posIzq-1>=0 && fila<=8){
+							p=posIzq-1;
 							f=fila+1;
 							celdaIzqI='#celda_'+letrasArray[p]+'_'+f;
 							if($(celdaIzqI).children().length>0){
@@ -666,3 +722,4 @@ function switchTurno(){
 		alTurno='fichaclara';
 	}
 }
+

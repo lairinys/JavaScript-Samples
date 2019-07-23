@@ -21,6 +21,7 @@
 }
 .fila{
 	display: table-row;
+	border: 1px solid yellow;
 }
 .celda{
 	display: table-cell;
@@ -38,9 +39,7 @@
     position: absolute;
 
 }
-.celdaclara{
-	background-color: 
-}
+
 .reina{
   background-color: rgba(0,0,0,0.8);
   background-image:url(../img/crown.png);
