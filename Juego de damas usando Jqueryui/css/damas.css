@@ -1,3 +1,7 @@
+h1{
+	padding-bottom: 5rem;
+}
+
 #tablero{
 	display: table;
 }
@@ -45,4 +49,24 @@
   background-image:url(../img/crown.png);
   background-size: contain;
   border: 1px solid yellow;
+}
+.jumbotron {
+    background-color: #E9ECC4;
+    margin-bottom: 0px;
+}
+.creditos{
+	background-color: #848484;
+	color: white;
+	padding-top: 15px;
+}
+.creditos p{
+	font-size: 0.8rem;
+}
+
+.creditos p a{
+	color:#E9ECC4;
+}
+.texto_reglas{
+	padding: 15px;
+
 }

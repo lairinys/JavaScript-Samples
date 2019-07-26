@@ -5,17 +5,74 @@
 	<title>Juego de Damas con JQuery</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
-	<link rel="stylesheet" type="text/css" href="css/damas.css">
+	
+	<!--<link rel="stylesheet" type="text/css" href="css/colorpicker.css">-->
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-colorpicker.min.css">
+	<link rel="stylesheet" type="text/css" href="css/damas.css">	
+
 	<script type="text/javascript" src="js/jquery-3.4.1.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/juego-damas.js"></script>
+	<!--<script type="text/javascript" src="js/colorpicker.js"></script>-->
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-colorpicker.js"></script>
+	
 </head>
 <body>
-	<div id="tablero">
+	<div class="row jumbotron">
+		<div class="col-md-6">
+			<p>Este programa fué hecho utilizando Jqueryui y Bootstrap</p>
+			<h1>Juego de Damas</h1>
+
+			<div class="row">
+
+			    <div class="col-md-8">
+				    <h5>Selecciona un color para tu tablero</h5>
+				    <input id="demo" type="text" class="form-control" value="rgb(255, 128, 0)" />   
+			    </div>
+			    <div class="col-md-4">
+			   	   <img src="img/paint.png" >
+			    </div>
+
+
+			    <div class="col-md-12">
+			    	<button id="btn_reglas" type="submit" class="btn btn-primary" name="B1">Mostrar las Reglas del juego</button>
+			    </div>
+
+				<div id="reglas" class="col-md-12 toggler">
+				  <div class="texto_reglas ui-widget-content ui-corner-all">
 		
+				    <p>
+				      1. El primer turno es para las fichas claras (rojas).<br>
+				      2. Sólo se permiten movimiento es diagonal sobre los cuadros oscuros.<br>
+				      3. No está permitido colocar dos fichas en el mismo recuadro.<br>
+				      4. Se puede comer a una ficha contraria pasando sobre esta hasta el recuadro siguiente.<br>
+				      5. Puede comer de manera consecutiva.<br>
+				      6. las fichas solo pueden avanzar hacia el frente (no pueden retroceder).<br>
+				      7. Sólo las reinas pueden retroceder.<br>
+				      8. Para convertirse en reina debe llegar a la primera fila del bando contrario (fila 1 para las fichas oscuras y fila 8 para las fichas claras)<br>
+				    </p>
+				  </div>
+				</div>
+
+			</div>
+		</div>
+		
+
+	  <div id="tablero" class="col-md-6">></div>
+	</div>
+ 
+    <div class="col-md-12 creditos">
+		<h5>Créditos:</h5>
+		<p>Diseño y programacion del tablero por: Lairinys Silva
+		Selector de color con la ayuda de: <a href="https://github.com/farbelous/bootstrap-colorpicker">farbelous/bootstrap-colorpicker</a>
+
+		Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/"     title="Flaticon">www.flaticon.com</a> messages.attribution.is_licensed_by <a href="http://creativecommons.org/licenses/by/3.0/"     title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></p>
 	</div>
 
-<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/"     title="Flaticon">www.flaticon.com</a> messages.attribution.is_licensed_by <a href="http://creativecommons.org/licenses/by/3.0/"     title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
 
 </body>
 </html>

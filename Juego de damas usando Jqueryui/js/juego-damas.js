@@ -1,3 +1,6 @@
+//Variable que indica si se muestran o ocultan las reglas del juego
+let mostrandoReglas='no';
+
 //Colores por defecto del tablero
 
 let color_celdaclara='#F2F2F2';
@@ -23,6 +26,22 @@ const mensTurInv="Espera tu turno";
 // Funcion principal que se ejecuta una vez se haya cargado el documento html
 $(document).ready(function(){
 
+	$("#reglas").hide();
+	$("#btn_reglas").click(function(){
+		if(mostrandoReglas=='si'){
+			$("#reglas").hide("fold",2000);
+			mostrandoReglas='no'
+			$("#btn_reglas").html("Mostrar las Reglas del juego");
+			$("#btn_reglas").switchClass( 'btn-danger', 'btn-primary');
+
+		}else{
+			$("#reglas").show("fold",2000);
+			mostrandoReglas='si'
+			$("#btn_reglas").html("Ocultar las Reglas del juego");	
+			$("#btn_reglas").switchClass( 'btn-primary','btn-danger');	
+		}
+		
+	});
 	$("#tablero").html(dibujarTablero());
 	
 	colorearCeldas();
@@ -103,6 +122,13 @@ function dibujarCeldas(){
 //Funcion que colorea las celdas
 
 function colorearCeldas(){
+
+	$('#demo').colorpicker();
+      
+      // Example using an event, to change the color of the .jumbotron background:
+    $('#demo').on('colorpickerChange', function(event) {
+        $('.celdaoscura').css('background-color', event.color.toString());
+    });
 
 	$(".celdaclara").css("background-color", color_celdaclara);
 	$(".celdaoscura").css("background-color", color_celdaoscura);
